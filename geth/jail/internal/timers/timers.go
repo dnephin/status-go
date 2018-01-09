@@ -24,7 +24,7 @@ func Define(vm *vm.VM, l *loop.Loop) error {
 
 	newTimer := func(interval bool) func(call otto.FunctionCall) otto.Value {
 		return func(call otto.FunctionCall) otto.Value {
-			delay, _ := call.Argument(1).ToInteger()
+			delay, _ := call.Argument(1).ToInteger() // nolint: gas
 			if delay < minDelay[interval] {
 				delay = minDelay[interval]
 			}
@@ -42,7 +42,7 @@ func Define(vm *vm.VM, l *loop.Loop) error {
 			}
 
 			t.timer = time.AfterFunc(t.duration, func() {
-				l.Ready(t) // nolint: errcheck
+				l.Ready(t) // nolint: errcheck, gas
 			})
 
 			value, newTimerErr := call.Otto.ToValue(t)
@@ -77,7 +77,7 @@ func Define(vm *vm.VM, l *loop.Loop) error {
 		}
 
 		t.timer = time.AfterFunc(t.duration, func() {
-			l.Ready(t) // nolint: errcheck
+			l.Ready(t) // nolint: errcheck, gas
 		})
 
 		value, setImmediateErr := call.Otto.ToValue(t)
@@ -92,7 +92,7 @@ func Define(vm *vm.VM, l *loop.Loop) error {
 	}
 
 	clearTimeout := func(call otto.FunctionCall) otto.Value {
-		v, _ := call.Argument(0).Export()
+		v, _ := call.Argument(0).Export() // nolint: gas
 		if t, ok := v.(*timerTask); ok {
 			t.stopped = true
 			t.timer.Stop()
